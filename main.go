@@ -4,10 +4,11 @@ import (
 	"flag"
 	"github.com/aerokube/zephyr/core"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
-	"math"
+	"time"
 )
 
 var (
@@ -25,50 +26,67 @@ func main() {
 	stop := make(chan os.Signal)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
 	for _, transfer := range *config {
-		readerSettings := transfer.ReaderSettings
-		reader := configureReader(readerSettings)
-		writerSettings := transfer.WriterSettings
-		writer := configureWriter(writerSettings)
-		
-		data := make(chan *core.Data, math.MaxInt32)
-		
-		go func() {
-			select {
-			case <-stop: return
-			default:
-			}
-			dt, err := reader.Read()
-			if (err != nil) {
-				log.Printf("Failed to read with %s: %v", readerSettings.Name, err)
-			}
-			data <- dt
-		}()
-		go func() {
-			for {
-				select {
-				case dt:= <-data: {
-					err := writer.Write(dt)
-					if (err != nil) {
-						log.Printf("Failed to write with %s: %v", writerSettings.Name, err)
-					}
-				}
-				case <-stop: return
-				}
-			}
-		}()
+		processTransfer(transfer, stop)
 	}
 }
 
-func configureReader(settings core.Settings) core.Reader {
-	reader, err := core.GetReader(settings.Name)
+func processTransfer(transfer core.Transfer, stop chan os.Signal) {
+	readerSettings := transfer.ReaderSettings
+	reader, delay := configureReader(readerSettings)
+	writerSettings := transfer.WriterSettings
+	writer := configureWriter(writerSettings)
+
+	data := make(chan *core.Data, math.MaxInt32)
+
+	ticker := time.NewTicker(delay)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				{
+					dt, err := reader.Read()
+					if err != nil {
+						log.Printf("Failed to read with %s: %v", readerSettings.Name, err)
+					}
+					data <- dt
+				}
+			case <-stop:
+				{
+					ticker.Stop()
+					return
+				}
+			}
+		}
+	}()
+	go func() {
+		for {
+			select {
+			case dt := <-data:
+				{
+					err := writer.Write(dt)
+					if err != nil {
+						log.Printf("Failed to write with %s: %v", writerSettings.Name, err)
+					}
+				}
+			case <-stop:
+				return
+			}
+		}
+	}()
+}
+
+func configureReader(settings core.ReaderSettings) (core.Reader, time.Duration) {
+	reader, err := GetReader(settings.Name)
 	dieOnError(err)
 	err = reader.Configure(settings)
 	dieOnError(err)
-	return reader
+	delay, err := time.ParseDuration(settings.Delay)
+	dieOnError(err)
+	return reader, delay
 }
 
-func configureWriter(settings core.Settings) core.Writer {
-	writer, err := core.GetWriter(settings.Name)
+func configureWriter(settings core.WriterSettings) core.Writer {
+	writer, err := GetWriter(settings.Name)
 	dieOnError(err)
 	err = writer.Configure(settings)
 	dieOnError(err)
@@ -76,10 +94,7 @@ func configureWriter(settings core.Settings) core.Writer {
 }
 
 func dieOnError(err error) {
-	if (err != nil) {
+	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func configure() {
 }
