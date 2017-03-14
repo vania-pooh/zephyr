@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"sync"
 )
 
 var (
@@ -25,12 +26,14 @@ func main() {
 	dieOnError(err)
 	stop := make(chan os.Signal)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	var wg sync.WaitGroup
 	for _, transfer := range *config {
-		processTransfer(transfer, stop)
+		processTransfer(transfer, stop, &wg)
 	}
+	wg.Wait()
 }
 
-func processTransfer(transfer core.Transfer, stop chan os.Signal) {
+func processTransfer(transfer core.Transfer, stop chan os.Signal, wg *sync.WaitGroup) {
 	readerSettings := transfer.ReaderSettings
 	reader, delay := configureReader(readerSettings)
 	writerSettings := transfer.WriterSettings
@@ -39,7 +42,9 @@ func processTransfer(transfer core.Transfer, stop chan os.Signal) {
 	data := make(chan *core.Data, math.MaxInt32)
 
 	ticker := time.NewTicker(delay)
+	wg.Add(2)
 	go func() {
+		defer wg.Done()
 		for {
 			select {
 			case <-ticker.C:
@@ -60,6 +65,7 @@ func processTransfer(transfer core.Transfer, stop chan os.Signal) {
 		}
 	}()
 	go func() {
+		defer wg.Done()
 		for {
 			select {
 			case dt := <-data:
