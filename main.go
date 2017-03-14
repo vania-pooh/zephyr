@@ -52,6 +52,7 @@ func processTransfer(transfer core.Transfer, stop chan os.Signal) {
 				}
 			case <-stop:
 				{
+					log.Printf("Stopping reader [%s]\n", readerSettings.Name)
 					ticker.Stop()
 					return
 				}
@@ -69,10 +70,12 @@ func processTransfer(transfer core.Transfer, stop chan os.Signal) {
 					}
 				}
 			case <-stop:
+				log.Printf("Stopping writer [%s]\n", writerSettings.Name)
 				return
 			}
 		}
 	}()
+	log.Printf("Initialized transfer from [%s] to [%s]\n", readerSettings.Name, writerSettings.Name)
 }
 
 func configureReader(settings core.ReaderSettings) (core.Reader, time.Duration) {
