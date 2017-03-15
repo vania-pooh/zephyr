@@ -47,13 +47,15 @@ func processTransfer(transfer core.Transfer, stop chan os.Signal, wg *sync.WaitG
 		defer wg.Done()
 		for {
 			select {
+			//TODO: first read should be immediate (currently - it's 1 min after start)
 			case <-ticker.C:
 				{
 					dt, err := reader.Read()
 					if err != nil {
 						log.Printf("Failed to read with %s: %v", readerSettings.Name, err)
+					} else {
+						data <- dt
 					}
-					data <- dt
 				}
 			case <-stop:
 				{

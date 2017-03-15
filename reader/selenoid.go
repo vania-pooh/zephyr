@@ -31,7 +31,7 @@ type SelenoidReader struct {
 
 func (sr *SelenoidReader) Read() (*core.Data, error) {
 	log.Printf("Fetching Selenoid data from [%s]\n", sr.selenoid)
-	url := fmt.Sprintf("http://%s/status", Selenoid)
+	url := fmt.Sprintf("http://%s/status", sr.selenoid)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
