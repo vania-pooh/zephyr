@@ -48,20 +48,14 @@ func processTransfer(transfer core.Transfer, stop chan bool, wg *sync.WaitGroup)
 
 	ticker := time.NewTicker(delay)
 	wg.Add(2)
+	log.Printf("Initializing transfer from [%s] to [%s]\n", readerSettings.Name, writerSettings.Name)
 	go func() {
 		defer wg.Done()
+		readerName := readerSettings.Name
+		readOnce(readerName, reader, &data)
 		for {
 			select {
-			//TODO: first read should be immediate (currently - it's 1 min after start)
-			case <-ticker.C:
-				{
-					dt, err := reader.Read()
-					if err != nil {
-						log.Printf("Failed to read with %s: %v", readerSettings.Name, err)
-					} else {
-						data <- dt
-					}
-				}
+			case <-ticker.C: readOnce(readerName, reader, &data)
 			case <-stop:
 				{
 					log.Printf("Stopping reader [%s]\n", readerSettings.Name)
@@ -88,7 +82,15 @@ func processTransfer(transfer core.Transfer, stop chan bool, wg *sync.WaitGroup)
 			}
 		}
 	}()
-	log.Printf("Initialized transfer from [%s] to [%s]\n", readerSettings.Name, writerSettings.Name)
+}
+
+func readOnce(readerName string, reader core.Reader, data * chan *core.Data) {
+	dt, err := reader.Read()
+	if err != nil {
+		log.Printf("Failed to read with %s: %v", readerName, err)
+	} else {
+		*data <- dt
+	}
 }
 
 func configureReader(settings core.ReaderSettings) (core.Reader, time.Duration) {
