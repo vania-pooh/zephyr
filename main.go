@@ -24,16 +24,21 @@ func init() {
 func main() {
 	config, err := core.LoadConfig(configFile)
 	dieOnError(err)
-	stop := make(chan os.Signal)
-	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	s := make(chan os.Signal)
+	signal.Notify(s, syscall.SIGTERM, syscall.SIGINT)
+	stop := make(chan bool)
 	var wg sync.WaitGroup
 	for _, transfer := range *config {
 		processTransfer(transfer, stop, &wg)
 	}
+	go func() {
+		<-s
+		close(stop)
+	}()
 	wg.Wait()
 }
 
-func processTransfer(transfer core.Transfer, stop chan os.Signal, wg *sync.WaitGroup) {
+func processTransfer(transfer core.Transfer, stop chan bool, wg *sync.WaitGroup) {
 	readerSettings := transfer.ReaderSettings
 	reader, delay := configureReader(readerSettings)
 	writerSettings := transfer.WriterSettings

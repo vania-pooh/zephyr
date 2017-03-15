@@ -72,7 +72,7 @@ func (sr *SelenoidReader) createMetric(name string, value string) core.Metric {
 }
 
 func (sr *SelenoidReader) fullMetricName(name string) string {
-	return fmt.Sprintf("one_min.%s.%s", sr.hostname, name)
+	return fmt.Sprintf("one_min.%s.selenoid.%s", sr.hostname, name)
 
 }
 

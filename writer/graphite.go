@@ -18,7 +18,7 @@ type GraphiteWriter struct {
 
 func (gw *GraphiteWriter) Write(data *core.Data) error {
 	for _, metric := range *data {
-		log.Printf("Sending metric [%s = %s] to Graphite at [%s:%s]\n", metric.Key, metric.Value, gw.graphiteClient.Host, gw.graphiteClient.Port)
+		log.Printf("Sending metric [%s = %s] to Graphite at [%s:%d]\n", metric.Key, metric.Value, gw.graphiteClient.Host, gw.graphiteClient.Port)
 		err := gw.graphiteClient.SimpleSend(metric.Key, metric.Value)
 		if err != nil {
 			return err
