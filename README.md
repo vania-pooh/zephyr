@@ -31,6 +31,7 @@ Zephyr is a simple bridge between a set of **readers** and **writers**. A **read
 
 ## Building
 ```
+ $ govendor sync
  $ GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build
  $ docker build -t zephyr:latest .
 ```
