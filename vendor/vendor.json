@@ -1,0 +1,67 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "8Wu58puIC1O+GEvTM9klimEHjrI=",
+			"path": "github.com/aandryashin/selenoid/config",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "gsoM6Ms4jIy79eYxDAw8iC/8x2E=",
+			"path": "github.com/aandryashin/selenoid/session",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "jVJDbe0IcyjoKc2xbohwzQr+FF0=",
+			"origin": "github.com/aandryashin/selenoid/vendor/github.com/docker/docker/api/types/blkiodev",
+			"path": "github.com/docker/docker/api/types/blkiodev",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "C8WQJ0s5xj1+fQ8lP1ntCQVqPLw=",
+			"origin": "github.com/aandryashin/selenoid/vendor/github.com/docker/docker/api/types/container",
+			"path": "github.com/docker/docker/api/types/container",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "4rxOgOCSZleDDi5HKWnhwR+PnK4=",
+			"origin": "github.com/aandryashin/selenoid/vendor/github.com/docker/docker/api/types/mount",
+			"path": "github.com/docker/docker/api/types/mount",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "VTxWyFud/RedrpllGdQonVtGM/A=",
+			"origin": "github.com/aandryashin/selenoid/vendor/github.com/docker/docker/api/types/strslice",
+			"path": "github.com/docker/docker/api/types/strslice",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "JbiWTzH699Sqz25XmDlsARpMN9w=",
+			"origin": "github.com/aandryashin/selenoid/vendor/github.com/docker/go-connections/nat",
+			"path": "github.com/docker/go-connections/nat",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "fInaxX723rCKOcfKMY8/x6f1o8E=",
+			"origin": "github.com/aandryashin/selenoid/vendor/github.com/docker/go-units",
+			"path": "github.com/docker/go-units",
+			"revision": "74e32f25784bd620a8e0770d27782e15f7e489d5",
+			"revisionTime": "2017-03-15T15:20:24Z"
+		},
+		{
+			"checksumSHA1": "twWXpa7Vf/9KHBcBt2+QPsiZMJ0=",
+			"path": "github.com/marpaia/graphite-golang",
+			"revision": "c474c9b821b4d0a4574edc6412b0003fbce233c4",
+			"revisionTime": "2016-11-29T22:18:56Z"
+		}
+	],
+	"rootPath": "github.com/aerokube/zephyr"
+}
